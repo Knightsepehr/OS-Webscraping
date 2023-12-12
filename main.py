@@ -106,9 +106,6 @@ def get_image_data(req_url,cat):
             job.author = j.text
     return job
 
-
-# print(getImageData("https://stocksnap.io/photo/photographer-picture-5QXAE9NBZA"))
-
 def get_all_images():
     images = []
     cats_link = getSearchLinks()
@@ -119,6 +116,5 @@ def get_all_images():
             
 
 get_all_images()
-# download_image("https://cdn.stocksnap.io/img-thumbs/960w/ocean-beach_ZJXS6NHIC1.jpg")
-# print(getSearchLinks())
+
 
