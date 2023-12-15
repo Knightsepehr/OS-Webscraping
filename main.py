@@ -1,7 +1,15 @@
 from bs4 import BeautifulSoup
+import requests
 import threading
 import cloudscraper
+from os.path import basename
 import html5lib
+from db import connection,try_sql_query,create_database
+
+database_name = "meow"
+
+create_database(database_name)
+db_connection = connection(database_name)
 
 proxies = {
     'http': 'http://127.0.0.1:2081',
@@ -106,15 +114,35 @@ def get_image_data(req_url,cat):
             job.author = j.text
     return job
 
+
+# print(getImageData("https://stocksnap.io/photo/photographer-picture-5QXAE9NBZA"))
+
 def get_all_images():
     images = []
     cats_link = getSearchLinks()
     for i in cats_link:
         cat = i.split("/")[-1]
         for j in get_image_links(i):
-            print(get_image_data(j,cat))
-            
+            # print(get_image_data(j,cat))
+            job = get_image_data(j,cat)
+            try_sql_query(
+                connection=db_connection,
+                title=job.title,
+                description=job.desc,
+                url=job.url,
+                img_url=job.img_url,
+                author=job.author,
+                views=job.views,
+                downloads=job.downloads,
+                license=job.lic,
+                resolution=job.res,
+                category=job.cat,
+                img_id=job.img_id
+                )
+
 
 get_all_images()
+# download_image("https://cdn.stocksnap.io/img-thumbs/960w/ocean-beach_ZJXS6NHIC1.jpg")
+# print(getSearchLinks())
 
 
