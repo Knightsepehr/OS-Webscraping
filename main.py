@@ -8,7 +8,7 @@ import html5lib
 from db import connection,try_sql_query,create_database,close_connection
 
 database_name = "meow"
-
+# salam man reza hastam
 create_database(database_name)
 # db_connection = connection(database_name)
 
