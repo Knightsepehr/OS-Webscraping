@@ -8,7 +8,7 @@ import html5lib
 from db import connection,try_sql_query,create_database,close_connection
 
 database_name = "meow"
-# salam man reza hastam
+
 create_database(database_name)
 # db_connection = connection(database_name)
 
@@ -53,9 +53,9 @@ class category():
 # Image
 def download_image(lnk,img_id):
     filename = "{}.jpg".format(img_id)
-    if not os.path.exists("images"):
-        os.makedirs("images")
-    filepath = os.path.join("images", filename)
+    if not os.path.exists("static"):
+        os.makedirs("static")
+    filepath = os.path.join("static", filename)
     with open(filepath, "wb") as f:
         f.write(scraper.get(lnk, proxies=proxies, headers=headers).content)
 
@@ -119,8 +119,24 @@ def get_image_data(req_url,cat):
             job.author = j.text
     return job
 
-def get_all_images():
+def do_job(job):
     db_connection = connection(database_name)
+    try_sql_query(
+        connection=db_connection,
+        title=job.title,
+        description=job.desc,
+        url=job.url,
+        img_url=job.img_url,
+        author=job.author,
+        views=job.views,
+        downloads=job.downloads,
+        license=job.lic,
+        resolution=job.res,
+        category=job.cat,
+        img_id=job.img_id
+        )
+    download_image(job.img_url,job.img_id)
+def get_all_images():
     images = []
     cats_link = getSearchLinks()
     for i in cats_link:
@@ -128,23 +144,8 @@ def get_all_images():
         for j in get_image_links(i):
             # print(get_image_data(j,cat))
             job = get_image_data(j,cat)
-            try_sql_query(
-                connection=db_connection,
-                title=job.title,
-                description=job.desc,
-                url=job.url,
-                img_url=job.img_url,
-                author=job.author,
-                views=job.views,
-                downloads=job.downloads,
-                license=job.lic,
-                resolution=job.res,
-                category=job.cat,
-                img_id=job.img_id
-                )
-            # download_image(job.img_url,job.img_id)
+            # do_job(job)
+            thread = threading.Thread(target=do_job,args=(job,))
+            thread.start()
 
-get_all_images()
-
-
-
+get_all_images()        
