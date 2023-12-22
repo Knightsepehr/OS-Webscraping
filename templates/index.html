@@ -4,6 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }}</title>
+    <style>
+        body{
+            backround:blue;
+        }
+        .card {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid black;
+            max-width: 25%;
+            padding:5px 10px;
+        }
+        .card h2{
+            max-width:200px;
+        }
+        .card img{
+            width:200px;
+        }
+        .card-details{
+            display: flex;
+            flex-direction: column;
+        
+        }
+        .card-list{
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+    </style>
 </head>
 <body>
     <h1>{{ title }}</h1>
@@ -11,6 +39,9 @@
         
         {% for job in jobs %}
             <li class="card">
+                <a href="{{ job[3] }}">
+                    <img src="{{url_for('static', filename=job[11] + '.jpg')}}" align="middle" />
+                </a>
                 <h2>{{ job[1] }}</h2>
                 <div class="card-details">
                     <p>{{ job[2] }}</p>
