@@ -1,6 +1,5 @@
-# Title: Scraping and Storing Images from StockSnap
 
-## Documentation:
+# Scraping and Storing Images from StockSnap, Documentation:
 
 ### Overview
 The purpose of this Python Project is to scrape image data ( using main module ) and images from the website StockSnap.io and store the information in a local mysql database ( Using db module ) and show the scraped data using flask ( using webapp module ).
