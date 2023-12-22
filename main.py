@@ -1,7 +1,15 @@
 from bs4 import BeautifulSoup
+import requests
 import threading
 import cloudscraper
+from os.path import basename
+import os
 import html5lib
+from db import connection,try_sql_query,create_database,close_connection
+
+database_name = "meow"
+
+create_database(database_name)
 
 proxies = {
     'http': 'http://127.0.0.1:2081',
@@ -10,8 +18,6 @@ proxies = {
 headers = {
     'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246"}
 
-# url = "https://stocksnap.io/view-photos/sort/trending/desc"
-# url = "https://stocksnap.io/search/nature"
 
 scraper = cloudscraper.create_scraper()
 
@@ -35,15 +41,13 @@ class Job:
         return "Cat : "+ self.cat +" | title : " + self.title + " | desc : " + self.desc + " | url : " + self.url + " | img url : " + self.img_url + " | author : " + self.author + " | views : " + self.views + " | downloads : " + self.downloads + " | img id : " + self.img_id + " | res : " + self.res + " | lic : " + self.lic
 
 
-class category():
-    def __init__(self, name, page_link):
-        self.name = name
-        self.page_link = page_link
-
-
 # Image
-def download_image(lnk):
-    with open(basename(lnk), "wb") as f:
+def download_image(lnk,img_id):
+    filename = "{}.jpg".format(img_id)
+    if not os.path.exists("static"):
+        os.makedirs("static")
+    filepath = os.path.join("static", filename)
+    with open(filepath, "wb") as f:
         f.write(scraper.get(lnk, proxies=proxies, headers=headers).content)
 
 
@@ -106,15 +110,39 @@ def get_image_data(req_url,cat):
             job.author = j.text
     return job
 
+def do_job(job):
+    db_connection = connection(database_name)
+    try_sql_query(
+        connection=db_connection,
+        title=job.title,
+        description=job.desc,
+        url=job.url,
+        img_url=job.img_url,
+        author=job.author,
+        views=job.views,
+        downloads=job.downloads,
+        license=job.lic,
+        resolution=job.res,
+        category=job.cat,
+        img_id=job.img_id
+        )
+    download_image(job.img_url,job.img_id)
 def get_all_images():
     images = []
     cats_link = getSearchLinks()
     for i in cats_link:
         cat = i.split("/")[-1]
         for j in get_image_links(i):
-            print(get_image_data(j,cat))
-            
+            # print(get_image_data(j,cat))
+            job = get_image_data(j,cat)
+            # To test with no multi threading uncomment the following line and comment the second and third line
+            # do_job(job) 
+            thread = threading.Thread(target=do_job,args=(job,))
+            thread.start()
 
-get_all_images()
-
-
+try:
+    get_all_images()
+except:
+    print("something went wrong !")
+finally:
+    close_connection(database_name)
