@@ -41,12 +41,6 @@ class Job:
         return "Cat : "+ self.cat +" | title : " + self.title + " | desc : " + self.desc + " | url : " + self.url + " | img url : " + self.img_url + " | author : " + self.author + " | views : " + self.views + " | downloads : " + self.downloads + " | img id : " + self.img_id + " | res : " + self.res + " | lic : " + self.lic
 
 
-class category():
-    def __init__(self, name, page_link):
-        self.name = name
-        self.page_link = page_link
-
-
 # Image
 def download_image(lnk,img_id):
     filename = "{}.jpg".format(img_id)
