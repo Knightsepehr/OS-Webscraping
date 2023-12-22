@@ -10,7 +10,6 @@ from db import connection,try_sql_query,create_database,close_connection
 database_name = "meow"
 
 create_database(database_name)
-# db_connection = connection(database_name)
 
 proxies = {
     'http': 'http://127.0.0.1:2081',
@@ -19,8 +18,6 @@ proxies = {
 headers = {
     'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246"}
 
-# url = "https://stocksnap.io/view-photos/sort/trending/desc"
-# url = "https://stocksnap.io/search/nature"
 
 scraper = cloudscraper.create_scraper()
 
