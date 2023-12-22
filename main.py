@@ -135,8 +135,14 @@ def get_all_images():
         for j in get_image_links(i):
             # print(get_image_data(j,cat))
             job = get_image_data(j,cat)
-            # do_job(job)
+            # To test with no multi threading uncomment the following line and comment the second and third line
+            # do_job(job) 
             thread = threading.Thread(target=do_job,args=(job,))
             thread.start()
 
-get_all_images()        
+try:
+    get_all_images()
+except:
+    print("something went wrong !")
+finally:
+    close_connection(database_name)
