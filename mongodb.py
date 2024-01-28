@@ -27,7 +27,7 @@ def create_database(database_name):
     finally:
         close_connection(client)
 
-def try_sql_query(db, title, description, url, img_url, author, views, downloads, license, resolution, category, img_id):
+def try_query(db, title, description, url, img_url, author, views, downloads, license, resolution, category, img_id):
     collection_name = "image2"
     collection = db[collection_name]
     data = {
